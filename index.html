@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Céu da Ana</title>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(#080816,#1a0f2e);
+  color:#fff;
+  text-align:center;
+}
+
+h1{margin-top:30px;}
+
+.card{
+  margin:10px;
+  padding:12px;
+  background:rgba(255,255,255,.08);
+  border-radius:10px;
+  display:inline-block;
+}
+
+button{
+  margin:10px;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(#f5a623,#ff6b6b);
+  font-weight:bold;
+  width:80%;
+  max-width:300px;
+}
+
+canvas{
+  margin-top:20px;
+  background:#111;
+  border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🌌 Céu da Ana</h1>
+
+<div class="card" id="day"></div>
+<div class="card" id="rings"></div>
+
+<br>
+
+<button onclick="checkin()">✅ Check-in</button>
+<button onclick="sos()">🆘 SOS</button>
+
+<p id="msg"></p>
+
+<canvas id="chart" width="300" height="200"></canvas>
+
+<script>
+
+let state = JSON.parse(localStorage.getItem("ceu")) || {
+  day:1,
+  rings:0,
+  logs:[]
+};
+
+function update(){
+  day.innerText="Dia "+state.day;
+  rings.innerText="🟡 "+state.rings;
+}
+
+function checkin(){
+  state.rings+=20;
+  state.logs.push(Math.random()*100);
+  state.day++;
+
+  msg.innerText="✅ Você avançou hoje.\nContinua." ;
+
+  save();
+  draw();
+}
+
+function sos(){
+  msg.innerText="Respira 4-4-6...\nIsso vai passar.\nFica aqui.";
+}
+
+function draw(){
+  let ctx=chart.getContext("2d");
+  ctx.clearRect(0,0,300,200);
+
+  ctx.beginPath();
+  state.logs.forEach((v,i)=>{
+    let x=i*40;
+    let y=200-v;
+
+    if(i===0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  });
+
+  ctx.strokeStyle="#ffd23f";
+  ctx.stroke();
+}
+
+function save(){
+  localStorage.setItem("ceu",JSON.stringify(state));
+}
+
+update();
+draw();
+
+</script>
+
+</body>
+</html>
